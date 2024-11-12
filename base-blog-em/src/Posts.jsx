@@ -15,6 +15,8 @@ export function Posts() {
     queryKey: ["posts"], 
     // * this is the function that's going to run to fetch data.
     queryFn:fetchPosts,
+    staleTime:2000 //2seconds 
+    //* the data is now fresh for to seconds and then it turns stale.
   });
   if(isLoading){
     return <div>Loading...</div>
@@ -27,6 +29,15 @@ export function Posts() {
   }
 
   //* isError: Means that the query has failed. if we have actually failed got an error from our query function
+
+
+  //! What is stale data? Data that is expired and is ready to be refetched.
+  //! the data is still in the catch, and it dosen't mean it's removed from the cache. itt just means that the data need to be revalidated.
+
+  //! data preftetch only triggers if the data is stale.
+
+  //! staleTime: How long will we let the data live before we go back to the server to fetch the freshset version of the data.
+  //! gcTime: is how long to keep data that might be re-used later. default gcTime is 5 minutes.
   return (
     <>
       <ul>

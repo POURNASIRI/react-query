@@ -1,7 +1,7 @@
 import { Posts } from "./Posts";
 import "./App.css";
 import { QueryClient,QueryClientProvider } from "@tanstack/react-query";
-
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 //* This is where we would put our options for query client,
 const queryClient = new QueryClient();
@@ -16,6 +16,7 @@ function App() {
       {/*//*Now we can call use Query in post component*/}
       <Posts />
     </div>
+    <ReactQueryDevtools />
     </QueryClientProvider>
   );
 }
