@@ -10,16 +10,23 @@ export function Posts() {
   const [selectedPost, setSelectedPost] = useState(null);
 
   //* useQuery returns an object with a lot of properties. use query takes an object of options 
-  const {data} = useQuery({
+  const {data,isError,isLoading} = useQuery({
     //* The query key is what defines this data within the query cache. the query key always an array 
     queryKey: ["posts"], 
     // * this is the function that's going to run to fetch data.
     queryFn:fetchPosts,
   });
-  if(!data){
+  if(isLoading){
     return <div>Loading...</div>
   }
+  //* isFetching :Means that the asynchronous query it hasn't resolved
+  //* isLoading: Means we are in a fatching state. Our query function hasn't rasolved yet, but we also have no catched data.
 
+  if(isError){
+    return <div>Something went wrong</div>
+  }
+
+  //* isError: Means that the query has failed. if we have actually failed got an error from our query function
   return (
     <>
       <ul>
