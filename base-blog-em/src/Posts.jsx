@@ -6,15 +6,21 @@ import { useQuery } from "@tanstack/react-query";
 const maxPostPage = 10;
 
 export function Posts() {
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedPost, setSelectedPost] = useState(null);
+
+  //* Pagination steps : 
+  //* 1. Track current page in component state
+  //* 2. Use qury key that includes the page number
+  //* 3. User click "next page" or "previous page" button 
+      //* update page state and fire off a new query.
 
   //* useQuery returns an object with a lot of properties. use query takes an object of options 
   const {data,isError,isLoading} = useQuery({
     //* The query key is what defines this data within the query cache. the query key always an array 
-    queryKey: ["posts"], 
+    queryKey: ["posts",currentPage], 
     // * this is the function that's going to run to fetch data.
-    queryFn:fetchPosts,
+    queryFn:()=>fetchPosts(currentPage),
     staleTime:2000 //2seconds 
     //* the data is now fresh for to seconds and then it turns stale.
   });
@@ -38,6 +44,11 @@ export function Posts() {
 
   //! staleTime: How long will we let the data live before we go back to the server to fetch the freshset version of the data.
   //! gcTime: is how long to keep data that might be re-used later. default gcTime is 5 minutes.
+
+
+
+
+
   return (
     <>
       <ul>
@@ -52,11 +63,11 @@ export function Posts() {
         ))}
       </ul>
       <div className="pages">
-        <button disabled onClick={() => {}}>
+        <button disabled={currentPage <= 1} onClick={() => setCurrentPage(currentPage - 1)}>
           Previous page
         </button>
-        <span>Page {currentPage + 1}</span>
-        <button disabled onClick={() => {}}>
+        <span>Page {currentPage}</span>
+        <button disabled={currentPage >= maxPostPage } onClick={() => setCurrentPage(currentPage + 1)}>
           Next page
         </button>
       </div>
