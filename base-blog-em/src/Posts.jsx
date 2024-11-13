@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { fetchPosts, deletePost, updatePost } from "./api";
 import { PostDetail } from "./PostDetail";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery,useQueryClient } from "@tanstack/react-query";
 const maxPostPage = 10;
 
 export function Posts() {
@@ -10,7 +10,7 @@ export function Posts() {
   const [selectedPost, setSelectedPost] = useState(null);
 
   //* Pagination steps : 
-  //* 1. Track current page in component state
+  //* 1. Track current page in component state (currentPage)
   //* 2. Use qury key that includes the page number
   //* 3. User click "next page" or "previous page" button 
       //* update page state and fire off a new query.
@@ -24,6 +24,24 @@ export function Posts() {
     staleTime:2000 //2seconds 
     //* the data is now fresh for to seconds and then it turns stale.
   });
+
+  //*pre-fetching data
+ //* adds data to cache.
+ //* automatically stale
+ //* show while re-fetching
+  const queryClint = useQueryClient();
+
+  useEffect(()=>{
+    if(currentPage < maxPostPage){
+      const nextPage = currentPage + 1;
+      queryClint.prefetchQuery({
+        queryKey:["posts",nextPage],
+        queryFn:()=>fetchPosts(nextPage)
+      })
+    }
+
+  },[currentPage,queryClint]);
+
   if(isLoading){
     return <div>Loading...</div>
   }
