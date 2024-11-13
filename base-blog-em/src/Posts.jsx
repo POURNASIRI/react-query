@@ -47,7 +47,7 @@ export function Posts() {
   }
   //* isFetching :Means that the asynchronous query it hasn't resolved
   //* isLoading: Means we are in a fatching state. Our query function hasn't rasolved yet, but we also have no catched data.
-
+  //* If we didn't have anything to show , if there was nothing in the cache and we  were getting the data from the server in thism  time we must uding is Loading Because  isFetching doesn't pay attention to the existence of data in the cache and only pays attention to the execution of the query function.
   if(isError){
     return <div>Something went wrong</div>
   }
@@ -70,7 +70,7 @@ export function Posts() {
   return (
     <>
       <ul>
-        {data.map((post) => (
+        {data?.map((post) => (
           <li
             key={post.id}
             className="post-title"
