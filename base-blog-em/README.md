@@ -188,3 +188,10 @@ useEffect(() => {
 - adds data to cache.
 - automatically stale
 - show while re-fetching
+
+
+## Mutaion 
+- making a network call thst changes data on the server in this case adds a new blog post or delete post.
+
+
+### Mutaion steps
