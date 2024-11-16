@@ -189,9 +189,94 @@ useEffect(() => {
 - automatically stale
 - show while re-fetching
 
+## Mutaion
 
-## Mutaion 
-- making a network call thst changes data on the server in this case adds a new blog post or delete post.
+- making a network call thst changes data on the server in this case adds a new blog post or delete post.**Unlike queries, mutations are typically used to create/update/delete data or perform server side-effects.**
 
+- For mutaion post in our project first we call `useMutation` hookk in Post component
 
-### Mutaion steps
+```jsx
+const deletePostMutation = useMutation({
+  // delete post is a mutation that writes to the server
+  mutationFn: (postId) => deletePost(postId),
+});
+```
+
+then pas the `deletePostMutation` to the Post detail component.
+
+```jsx
+{
+  selectedPost && (
+    <PostDetail post={selectedPost} deletePostMutation={deletePostMutation} />
+  );
+}
+```
+
+In the PostDetail component we use `deletePostMutation` function `mutate` property to call the delete post mutation.
+
+```jsx
+export function PostDetail({ post, deletePostMutation }) {
+  // replace with useQuery
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['comments', post.id],
+    queryFn: () => fetchComments(post.id),
+    staleTime: 1000,
+  });
+
+  if (isLoading) {
+    return <p className='loading'>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p className='error'>Something went wrong</p>;
+  }
+
+  return (
+    <>
+      <h3 style={{ color: 'blue' }}>{post.title}</h3>
+      <button onClick={() => deletePostMutation.mutate(post.id)}>
+        Delete
+      </button>
+      <button>Update title</button>
+      <p>{post.body}</p>
+      <h4>Comments</h4>
+      {data.map((comment) => (
+        <li key={comment.id}>
+          {comment.email}: {comment.body}
+        </li>
+      ))}
+    </div>
+  );
+}
+```
+
+Note: when we use `useMutation` we don't have isLoading and isFetching properties because we don't have any data to catch.
+
+- Using Mutation other properties to show the status of the mutation
+
+```jsx
+<div>
+  <button onClick={() => deletePostMutation.mutate(post.id)}>Delete</button>
+  {deletePostMutation.isPending && <p className='loading'>Deleting...</p>}
+  {deletePostMutation.isError && (
+    <p className='error'>{deletePostMutation.error.toString()}</p>
+  )}
+  {deletePostMutation.isSuccess && <p className='success'>Deleted</p>}
+</div>
+```
+
+Note: we using `useMutation` hook in PostDetail component insted of Post component,this is because we want to using `reset` method when other post is clicked.
+
+```jsx
+<li
+  key={post.id}
+  className='post-title'
+  onClick={() => {
+    // reset the mutation state
+    deletePostMutation.reset();
+    setSelectedPost(post);
+  }}
+>
+  {post.title}
+</li>
+```
