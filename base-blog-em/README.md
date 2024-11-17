@@ -280,3 +280,17 @@ Note: we using `useMutation` hook in PostDetail component insted of Post compone
   {post.title}
 </li>
 ```
+
+- _To update each post, we do the exact steps, such as deleting the post_
+
+
+## Summary
+1. Install React Query and then create a query client and add it to a query client provider, to make sure that the cache  and the hooks were available to all of the children.
+2. Implemented `useQuery` hook to fetch data from the server.
+3. The return object included `isLoading`, `isError`, `isFetching` and we used those to help inform the use of the status of the our particular query.
+4. we looked at the `staleTime` , which determines whether or not the query data needs to be re-fetched on a certain trigger, like refocusing the window, and how old the data needs to be before it is considered stale.
+5. The `gcTime` or garbage collection time is how long you want to hold on to the data after
+inactivity.The cache data  can be used when that query gets called again to show the user as a placeholder.
+6. quey key is what defines this data within the query cache. the query key always an array.
+7. Pagination and pre-fetching data 
+8. `useMutation` hook is used to make a network call that changes data on the server in this case adds a new blog post or delete post.
